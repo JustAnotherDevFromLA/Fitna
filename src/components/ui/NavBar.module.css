@@ -1,0 +1,38 @@
+.navBar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(18, 18, 18, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #333;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 0;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 50;
+}
+
+.navItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #666;
+    text-decoration: none;
+    gap: 4px;
+    transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.navItem:active {
+    transform: scale(0.9);
+}
+
+.active {
+    color: #0070f3;
+}
+
+.label {
+    font-size: 0.75rem;
+    font-weight: 600;
+}

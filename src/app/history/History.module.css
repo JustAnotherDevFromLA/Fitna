@@ -1,0 +1,102 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 16px;
+    background-color: #121212;
+    color: white;
+}
+
+.header {
+    margin-bottom: 32px;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.emptyState {
+    color: #888;
+    text-align: center;
+    margin-top: 64px;
+    font-size: 1.1rem;
+}
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.card {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 12px;
+}
+
+.date {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #0070f3;
+}
+
+.duration {
+    color: #888;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.activityList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.activityRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.activityName {
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.activityDetail {
+    color: #aaa;
+    font-size: 0.85rem;
+}
+
+.deleteButton {
+    background: none;
+    border: none;
+    color: #ff4d4f;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.deleteButton:hover {
+    background-color: rgba(255, 77, 79, 0.1);
+}
