@@ -305,13 +305,34 @@ export default function Home() {
           gap: '16px'
         }}>
           {activeSession && isToday ? (
-            <div style={{ width: '100%' }}>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {activeSession.status === 'paused' && (
+                <div style={{
+                  backgroundColor: '#1a1a1a',
+                  border: '1px solid #333',
+                  borderRadius: '16px',
+                  padding: '16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  textAlign: 'left'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>{activeSession.name || 'Workout'}</span>
+                    <span style={{ fontSize: '0.75rem', color: '#f5a623', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', padding: '4px 8px', backgroundColor: 'rgba(245, 166, 35, 0.1)', borderRadius: '4px' }}>PAUSED</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#aaa', fontSize: '0.9rem' }}>
+                    <span>{activeSession.activities.length} Exercises</span>
+                    <span>Started {new Date(activeSession.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  </div>
+                </div>
+              )}
               <Button
                 variant="primary"
                 style={{ width: '100%', fontSize: '1.2rem', padding: '16px' }}
                 onClick={() => setIsLogModalOpen(true)}
               >
-                Resume Active Workout
+                Resume Workout
               </Button>
             </div>
           ) : (
