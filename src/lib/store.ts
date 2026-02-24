@@ -165,7 +165,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         }
 
         const newSession: Session = {
-            id: `sesh_${Date.now()}`,
+            id: crypto.randomUUID(),
             userId: get().user?.id || userId,
             name: sessionName || 'Workout',
             startTime: startTimeOverride || Date.now(),
