@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 import styles from './Button.module.css';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
-    size?: 'normal' | 'large' | 'massive'; // Fat-finger focused sizing
+    size?: 'small' | 'normal' | 'large' | 'massive';
     fullWidth?: boolean;
+    children: React.ReactNode;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-    children,
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
     variant = 'primary',
-    size = 'large',
+    size = 'normal',
     fullWidth = false,
     className = '',
+    children, // Destructure children here as it's explicitly in ButtonProps
     ...props
-}) => {
+}, ref) => {
     const customClasses = [
         styles.btn,
         styles[variant],
@@ -24,8 +25,9 @@ export const Button: React.FC<ButtonProps> = ({
     ].join(' ').trim();
 
     return (
-        <button className={customClasses} {...props}>
+        <button className={customClasses} {...props} ref={ref}>
             {children}
         </button>
     );
-};
+});
+Button.displayName = 'Button';

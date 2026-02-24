@@ -47,7 +47,7 @@ export class GoalEngine {
         const C = baseC + Math.max(0, creep);
 
         // Full periodization formula from specs
-        let I = A * Math.sin(B * (t - 1.5)) + C;
+        const I = A * Math.sin(B * (t - 1.5)) + C;
 
         return Number(I.toFixed(3));
     }
@@ -68,11 +68,21 @@ export class GoalEngine {
             // Determine if it's a deload week (drop in intensity vs the week before, or strictly every 4th week)
             const isDeload = t % 4 === 0;
 
+            let initialSessions = this.generateSessionsForSplit(split);
+
+            // If it's a deload week, visually append "(Deload)" to the focus of working days
+            if (isDeload) {
+                initialSessions = initialSessions.map(session => {
+                    if (session.focus.toLowerCase().includes('rest')) return session;
+                    return { ...session, focus: `${session.focus} (Deload)` };
+                });
+            }
+
             weeks.push({
                 weekNumber: t,
                 intensityTarget,
                 isDeload,
-                sessions: this.generateSessionsForSplit(split)
+                sessions: initialSessions
             });
         }
 

@@ -27,6 +27,7 @@
   color: white;
   box-shadow: 0 4px 14px 0 rgba(0, 112, 243, 0.39);
 }
+
 .primary:hover {
   background-color: #005bb5;
 }
@@ -35,6 +36,7 @@
   background-color: #eaeaea;
   color: #333;
 }
+
 .secondary:hover {
   background-color: #d4d4d4;
 }
@@ -44,6 +46,7 @@
   color: white;
   box-shadow: 0 4px 14px 0 rgba(255, 77, 79, 0.39);
 }
+
 .danger:hover {
   background-color: #d9363e;
 }
@@ -52,27 +55,36 @@
   background-color: transparent;
   color: #666;
 }
+
 .ghost:hover {
-  background-color: rgba(0,0,0,0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* Sizing - The crucial part for "Fat-Finger UI" */
+.small {
+  padding: 4px 12px;
+  font-size: 0.85rem;
+}
+
 .normal {
   padding: 12px 24px;
-  font-size: 16px;
-  min-height: 48px; /* Mobile touch target minimum */
+  font-size: 1rem;
+  min-height: 48px;
+  /* Mobile touch target minimum */
 }
 
 .large {
   padding: 16px 32px;
   font-size: 18px;
-  min-height: 56px; /* Ideal for gym environment where hands might be shaky */
+  min-height: 56px;
+  /* Ideal for gym environment where hands might be shaky */
 }
 
 .massive {
   padding: 24px 40px;
   font-size: 22px;
-  min-height: 72px; /* For the main "Complete Workout" or "Start Timer" actions */
+  min-height: 72px;
+  /* For the main "Complete Workout" or "Start Timer" actions */
 }
 
 .fullWidth {

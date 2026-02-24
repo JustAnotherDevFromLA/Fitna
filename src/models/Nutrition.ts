@@ -27,4 +27,5 @@ export interface DailyLog {
     meals: Meal[];
     bodyweight?: number; // in lbs or kg based on user pref
     goals: NutritionGoals;
+    isSynced?: boolean;
 }

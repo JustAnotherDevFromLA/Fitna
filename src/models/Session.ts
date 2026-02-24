@@ -27,7 +27,7 @@ export interface CardioActivity extends BaseActivity {
   distance?: number; // in meters or miles based on user preference
   duration?: number; // in seconds
   heartRateAvg?: number;
-  pace?: string; 
+  pace?: string;
 }
 
 // Mobility/Pilates specific
@@ -43,8 +43,12 @@ export type Activity = WeightliftingActivity | CardioActivity | MobilityActivity
 export interface Session {
   id: string;
   userId: string;
+  name?: string; // Optional session explicit label
   startTime: number; // Unix timestamp
   endTime?: number;
+  status?: "active" | "paused"; // Optional for backwards compatibility, undefined means active
+  pausedAt?: number;
+  totalPausedMs?: number;
   activities: Activity[];
   isSynced: boolean; // For local-first caching strategy
 }

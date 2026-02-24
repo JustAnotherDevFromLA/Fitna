@@ -35,7 +35,7 @@ export default function GlobalError({
             }}>
                 <h2 style={{ color: '#ff4d4f', marginTop: 0 }}>Something went wrong!</h2>
                 <p style={{ color: '#aaa', margin: '16px 0 24px 0' }}>
-                    An unexpected error occurred in the Antigravity engine. Don't worry, your offline data is safe.
+                    An unexpected error occurred in the Antigravity engine. Don&apos;t worry, your offline data is safe.
                 </p>
                 <Button
                     variant="secondary"

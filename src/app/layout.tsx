@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { NavBar } from "@/components/ui/NavBar";
 import { ToastProvider } from "@/lib/ToastContext";
+import { AuthWrapper } from "@/components/ui/AuthWrapper";
 
 export const viewport: Viewport = {
   themeColor: "#000000",
@@ -33,12 +34,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ToastProvider>
-          <div style={{ paddingBottom: '80px' }}>
-            {children}
-          </div>
-          <NavBar />
-        </ToastProvider>
+        <AuthWrapper>
+          <ToastProvider>
+            <div style={{ paddingBottom: '80px' }}>
+              {children}
+            </div>
+            <NavBar />
+          </ToastProvider>
+        </AuthWrapper>
       </body>
     </html>
   );

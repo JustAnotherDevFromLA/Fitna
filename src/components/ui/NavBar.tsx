@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, History, User, Apple, CalendarDays } from 'lucide-react';
+import { Home, History, User, CalendarDays } from 'lucide-react';
 import styles from './NavBar.module.css';
 
 export const NavBar = () => {
