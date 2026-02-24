@@ -141,29 +141,35 @@ function PlanPlanner() {
         dbStore.syncPendingSessions().catch(console.error);
     };
 
+    const weekStart = new Date(currentWeekSunday);
+    const weekEnd = new Date(currentWeekSunday);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    const formatShortDate = (d: Date) => `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+    const weekDateString = `${formatShortDate(weekStart)}-${formatShortDate(weekEnd)} ${weekStart.getFullYear()}`;
+
     return (
         <main style={{ padding: '24px', color: 'white', maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>
-                    <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px' }}>Weekly Split</h1>
-                    <p style={{ color: '#888', marginTop: '4px', fontSize: '0.9rem' }}>
-                        Week of {getWeekSundayString(currentWeekSunday)}
+                <button
+                    onClick={() => handleWeekNav('prev')}
+                    style={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '8px', color: '#fff', cursor: 'pointer' }}
+                >
+                    <ChevronLeft size={20} />
+                </button>
+
+                <div style={{ textAlign: 'center' }}>
+                    <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px' }}>Weekly Sprint</h1>
+                    <p style={{ color: '#888', marginTop: '4px', fontSize: '0.9rem', fontWeight: 600 }}>
+                        {weekDateString}
                     </p>
                 </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                        onClick={() => handleWeekNav('prev')}
-                        style={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '8px', color: '#fff', cursor: 'pointer' }}
-                    >
-                        <ChevronLeft size={20} />
-                    </button>
-                    <button
-                        onClick={() => handleWeekNav('next')}
-                        style={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '8px', color: '#fff', cursor: 'pointer' }}
-                    >
-                        <ChevronRight size={20} />
-                    </button>
-                </div>
+
+                <button
+                    onClick={() => handleWeekNav('next')}
+                    style={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '8px', color: '#fff', cursor: 'pointer' }}
+                >
+                    <ChevronRight size={20} />
+                </button>
             </header>
 
             {/* Split Selector Tabs */}
