@@ -11,6 +11,7 @@ import { dbStore } from '../lib/db';
 import { GoalEngine, SplitType, SessionPlan } from '../lib/GoalEngine';
 import { Session, WeightliftingActivity, CardioActivity, MobilityActivity } from '../models/Session';
 import { EditSessionModal } from '../components/session/EditSessionModal';
+import { ActiveSessionInline } from '../components/session/ActiveSessionInline';
 import { LogSessionModal } from '../components/session/LogSessionModal';
 
 export default function Home() {
@@ -305,36 +306,7 @@ export default function Home() {
           gap: '16px'
         }}>
           {activeSession && isToday ? (
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {activeSession.status === 'paused' && (
-                <div style={{
-                  backgroundColor: '#1a1a1a',
-                  border: '1px solid #333',
-                  borderRadius: '16px',
-                  padding: '16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                  textAlign: 'left'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>{activeSession.name || 'Workout'}</span>
-                    <span style={{ fontSize: '0.75rem', color: '#f5a623', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', padding: '4px 8px', backgroundColor: 'rgba(245, 166, 35, 0.1)', borderRadius: '4px' }}>PAUSED</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#aaa', fontSize: '0.9rem' }}>
-                    <span>{activeSession.activities.length} Exercises</span>
-                    <span>Started {new Date(activeSession.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                  </div>
-                </div>
-              )}
-              <Button
-                variant="primary"
-                style={{ width: '100%', fontSize: '1.2rem', padding: '16px' }}
-                onClick={() => setIsLogModalOpen(true)}
-              >
-                Resume Workout
-              </Button>
-            </div>
+            <ActiveSessionInline />
           ) : (
             <>
               <h3 style={{ margin: 0, fontSize: '1.5rem' }}>{isFuture ? "Future Workout" : (isToday ? "Ready to train today?" : "Record Past Workout")}</h3>
@@ -388,9 +360,6 @@ export default function Home() {
                   // Start the session entirely inline, mutating the store
                   const sessionName = isRestDay ? 'Active Recovery' : (todaysPlan?.focus || 'Workout');
                   startNewSession('user_123', 'Custom Workout', undefined, initialActivities, sessionName);
-
-                  // Instantly open the new Log Session full-screen tracker
-                  setIsLogModalOpen(true);
                 }}
               >
                 <span style={{ fontWeight: 800 }}>
@@ -410,13 +379,7 @@ export default function Home() {
           onStartWorkout={(configuredActivities) => {
             const sessionName = isRestDay ? 'Active Recovery' : (todaysPlan?.focus || 'Workout');
             startNewSession('user_123', 'Custom Workout', undefined, configuredActivities, sessionName);
-            setIsLogModalOpen(true); // Open the tracker immediately after configuration
           }}
-        />
-
-        <LogSessionModal
-          isOpen={isLogModalOpen}
-          onClose={() => setIsLogModalOpen(false)}
         />
 
         {/* Completed Daily Sessions Log */}

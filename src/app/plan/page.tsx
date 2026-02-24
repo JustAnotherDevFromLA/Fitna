@@ -147,6 +147,18 @@ function PlanPlanner() {
     const formatShortDate = (d: Date) => `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
     const weekDateString = `${formatShortDate(weekStart)}-${formatShortDate(weekEnd)} ${weekStart.getFullYear()}`;
 
+    // Calculate Week Number of the Year
+    const getWeekNumber = (d: Date) => {
+        const date = new Date(d.getTime());
+        date.setHours(0, 0, 0, 0);
+        date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+        const week1 = new Date(date.getFullYear(), 0, 4);
+        return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+    };
+
+    const currentYear = weekStart.getFullYear();
+    const currentWeekNum = getWeekNumber(weekStart);
+
     return (
         <main style={{ padding: '24px', color: 'white', maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -158,7 +170,7 @@ function PlanPlanner() {
                 </button>
 
                 <div style={{ textAlign: 'center' }}>
-                    <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px' }}>Weekly Sprint</h1>
+                    <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px' }}>{currentYear} Week {currentWeekNum} {splitNames[activeTab]}</h1>
                     <p style={{ color: '#888', marginTop: '4px', fontSize: '0.9rem', fontWeight: 600 }}>
                         {weekDateString}
                     </p>
