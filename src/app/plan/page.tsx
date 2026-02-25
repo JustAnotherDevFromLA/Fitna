@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '../../components/ui/Button';
 import { GoalEngine, SplitType, SessionPlan } from '../../lib/GoalEngine';
 import { useToast } from '../../lib/ToastContext';
-import { Trash, Plus, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Trash, Plus, X, ChevronLeft, ChevronRight, Save } from 'lucide-react';
 import { getWeekSundayString, resolveActiveSplitForDate } from '../../lib/utils';
 import { dbStore } from '../../lib/db';
 
@@ -145,7 +145,7 @@ function PlanPlanner() {
     const weekEnd = new Date(currentWeekSunday);
     weekEnd.setDate(weekEnd.getDate() + 6);
     const formatShortDate = (d: Date) => `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
-    const weekDateString = `${formatShortDate(weekStart)}-${formatShortDate(weekEnd)} ${weekStart.getFullYear()}`;
+    const weekDateString = `${formatShortDate(weekStart)} - ${formatShortDate(weekEnd)}`;
 
     // Calculate Week Number of the Year
     const getWeekNumber = (d: Date) => {
@@ -160,32 +160,32 @@ function PlanPlanner() {
     const currentWeekNum = getWeekNumber(weekStart);
 
     return (
-        <main style={{ padding: '24px', color: 'white', maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <main style={{ padding: '24px', color: 'var(--foreground)', maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <button
                     onClick={() => handleWeekNav('prev')}
-                    style={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '8px', color: '#fff', cursor: 'pointer' }}
+                    style={{ background: 'none', border: 'none', color: 'var(--foreground-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px' }}
                 >
-                    <ChevronLeft size={20} />
+                    <ChevronLeft size={24} />
                 </button>
 
-                <div style={{ textAlign: 'center' }}>
-                    <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px' }}>{currentYear} Week {currentWeekNum} {splitNames[activeTab]}</h1>
-                    <p style={{ color: '#888', marginTop: '4px', fontSize: '0.9rem', fontWeight: 600 }}>
+                <div style={{ textAlign: 'center', flex: 1 }}>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0, color: 'var(--foreground)' }}>{currentYear} Week {currentWeekNum}</h1>
+                    <p style={{ color: 'var(--foreground-muted)', marginTop: '4px', fontSize: '0.9rem', fontWeight: 600 }}>
                         {weekDateString}
                     </p>
                 </div>
 
                 <button
                     onClick={() => handleWeekNav('next')}
-                    style={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '8px', color: '#fff', cursor: 'pointer' }}
+                    style={{ background: 'none', border: 'none', color: 'var(--foreground-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px' }}
                 >
-                    <ChevronRight size={20} />
+                    <ChevronRight size={24} />
                 </button>
             </header>
 
             {/* Split Selector Tabs */}
-            <div style={{ display: 'flex', gap: '8px', backgroundColor: '#1a1a1a', padding: '6px', borderRadius: '12px' }}>
+            <div style={{ display: 'flex', gap: '8px', backgroundColor: 'var(--surface-secondary)', padding: '6px', borderRadius: '12px' }}>
                 {(Object.keys(splitNames) as SplitType[]).map((splitKey) => (
                     <button
                         key={splitKey}
@@ -193,10 +193,10 @@ function PlanPlanner() {
                         style={{
                             flex: 1,
                             padding: '12px 8px',
-                            backgroundColor: activeTab === splitKey ? '#333' : 'transparent',
+                            backgroundColor: activeTab === splitKey ? 'var(--surface-hover)' : 'transparent',
                             border: 'none',
                             borderRadius: '8px',
-                            color: activeTab === splitKey ? '#fff' : '#888',
+                            color: activeTab === splitKey ? 'var(--foreground)' : 'var(--foreground-muted)',
                             fontWeight: activeTab === splitKey ? 700 : 500,
                             cursor: 'pointer',
                             transition: 'all 0.2s',
@@ -216,8 +216,8 @@ function PlanPlanner() {
                             key={dayPlan.day}
                             onClick={() => setEditingDay(dayPlan)}
                             style={{
-                                backgroundColor: isRest ? 'transparent' : '#1a1a1a',
-                                border: isRest ? '1px dashed #333' : '1px solid #333',
+                                backgroundColor: isRest ? 'transparent' : 'var(--surface-secondary)',
+                                border: isRest ? '1px dashed var(--border)' : '1px solid var(--border)',
                                 padding: '16px',
                                 borderRadius: '16px',
                                 display: 'flex',
@@ -227,14 +227,14 @@ function PlanPlanner() {
                                 transition: 'all 0.2s ease',
                             }}>
                             <div>
-                                <span style={{ color: '#0070f3', fontWeight: 700, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Day {dayPlan.day} • {dayNames[dayPlan.day - 1]}</span>
-                                <h3 style={{ margin: '4px 0 0 0', color: isRest ? '#888' : '#fff' }}>{dayPlan.focus}</h3>
+                                <span style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Day {dayPlan.day} • {dayNames[dayPlan.day - 1]}</span>
+                                <h3 style={{ margin: '4px 0 0 0', color: isRest ? 'var(--foreground-muted)' : 'var(--foreground)' }}>{dayPlan.focus}</h3>
                             </div>
 
                             {!isRest && (
                                 <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                     {dayPlan.exercises.slice(0, 3).map((ex, i) => (
-                                        <span key={i} style={{ color: '#aaa', fontSize: '0.85rem' }}>{ex}</span>
+                                        <span key={i} style={{ color: 'var(--foreground-muted)', fontSize: '0.85rem' }}>{ex}</span>
                                     ))}
                                     {dayPlan.exercises.length > 3 && <span style={{ color: '#666', fontSize: '0.8rem' }}>+ more</span>}
                                 </div>
@@ -246,8 +246,9 @@ function PlanPlanner() {
 
             {/* Action Bar */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', position: 'sticky', bottom: '24px', marginTop: '16px' }}>
-                <Button variant={savedSplit === activeTab ? "secondary" : "primary"} size="large" fullWidth onClick={handleSaveSplit}>
-                    {savedSplit === activeTab ? 'Save Edits & Return Home' : `Activate ${splitNames[activeTab]}`}
+                <Button variant="primary" size="large" fullWidth onClick={handleSaveSplit} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <Save size={20} />
+                    {savedSplit === activeTab ? 'Save' : `Activate ${splitNames[activeTab]}`}
                 </Button>
 
                 <div style={{
@@ -274,35 +275,35 @@ function PlanPlanner() {
             {/* Editing Modal */}
             {editingDay && (
                 <div style={{
-                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    backgroundColor: 'var(--overlay)',
                     zIndex: 100, display: 'flex', alignItems: 'flex-end', justifyContent: 'center'
                 }}>
                     <div style={{
-                        backgroundColor: '#111', width: '100%', maxWidth: '600px',
+                        backgroundColor: 'var(--background)', width: '100%', maxWidth: '600px',
                         borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+                        border: '1px solid var(--border)',
                         padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px',
                         maxHeight: '90vh', overflowY: 'auto'
                     }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#fff' }}>Edit Day {editingDay.day} • {dayNames[editingDay.day - 1]}</h2>
+                            <h2 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--foreground)' }}>Edit Day {editingDay.day} • {dayNames[editingDay.day - 1]}</h2>
                             <button onClick={() => setEditingDay(null)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>
                                 <X size={24} />
                             </button>
                         </div>
 
                         <div>
-                            <label style={{ display: 'block', color: '#888', fontSize: '0.9rem', marginBottom: '8px' }}>Focus / Name</label>
+                            <label style={{ display: 'block', color: 'var(--foreground-muted)', fontSize: '0.9rem', marginBottom: '8px' }}>Focus / Name</label>
                             <input
                                 type="text"
                                 value={editingDay.focus}
                                 onChange={(e) => setEditingDay({ ...editingDay, focus: e.target.value })}
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', backgroundColor: '#222', border: '1px solid #333', color: '#fff', fontSize: '1rem' }}
+                                style={{ width: '100%', padding: '12px', borderRadius: '8px', backgroundColor: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--foreground)', fontSize: '1rem' }}
                             />
                         </div>
 
                         <div>
-                            <label style={{ display: 'block', color: '#888', fontSize: '0.9rem', marginBottom: '8px' }}>Exercises</label>
+                            <label style={{ display: 'block', color: 'var(--foreground-muted)', fontSize: '0.9rem', marginBottom: '8px' }}>Exercises</label>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                 {editingDay.exercises.map((ex, idx) => (
                                     <div key={idx} style={{ display: 'flex', gap: '8px' }}>
@@ -314,14 +315,14 @@ function PlanPlanner() {
                                                 newEx[idx] = e.target.value;
                                                 setEditingDay({ ...editingDay, exercises: newEx });
                                             }}
-                                            style={{ flex: 1, padding: '12px', borderRadius: '8px', backgroundColor: '#222', border: '1px solid #333', color: '#fff', fontSize: '1rem' }}
+                                            style={{ flex: 1, padding: '12px', borderRadius: '8px', backgroundColor: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--foreground)', fontSize: '1rem' }}
                                         />
                                         <button
                                             onClick={() => {
                                                 const newEx = editingDay.exercises.filter((_, i) => i !== idx);
                                                 setEditingDay({ ...editingDay, exercises: newEx });
                                             }}
-                                            style={{ padding: '0 16px', backgroundColor: '#331111', color: '#ff4d4f', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+                                            style={{ padding: '0 16px', backgroundColor: 'var(--primary-light)', color: 'var(--danger)', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
                                         >
                                             <Trash size={18} />
                                         </button>
@@ -330,14 +331,15 @@ function PlanPlanner() {
                             </div>
                             <button
                                 onClick={() => setEditingDay({ ...editingDay, exercises: [...editingDay.exercises, ''] })}
-                                style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '8px', color: '#0070f3', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}
+                                style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}
                             >
                                 <Plus size={18} /> Add Exercise
                             </button>
                         </div>
 
-                        <Button variant="primary" size="large" fullWidth onClick={() => saveDayEdits(editingDay)} style={{ marginTop: '16px' }}>
-                            Save Day {editingDay.day} • {dayNames[editingDay.day - 1]}
+                        <Button variant="primary" size="large" fullWidth onClick={() => saveDayEdits(editingDay)} style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <Save size={20} />
+                            Save
                         </Button>
                     </div>
                 </div>

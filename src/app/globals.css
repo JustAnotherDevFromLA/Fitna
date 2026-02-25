@@ -1,17 +1,47 @@
 :root {
-  --background: #000000;
-  --surface: #121212;
-  --surface-hover: #1a1a1a;
-  --foreground: #ededed;
+  --background: #ffffff;
+  --surface: #f5f5f5;
+  --surface-secondary: #eeeeee;
+  --surface-hover: #e8e8e8;
+  --foreground: #171717;
+  --foreground-muted: #666666;
+  --border: #e0e0e0;
 
   --primary: #0070f3;
   --primary-hover: #0051a8;
+  --primary-light: rgba(0, 112, 243, 0.1);
+  --primary-border: rgba(0, 112, 243, 0.2);
 
   --danger: #ff4d4f;
+  --danger-hover: #d9363e;
   --success: #10b981;
+  --success-hover: #059669;
 
+  --overlay: rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+  --background: #000000;
+  --surface: #121212;
+  --surface-secondary: #1a1a1a;
+  --surface-hover: #222222;
+  --foreground: #ededed;
+  --foreground-muted: #888888;
   --border: #333333;
-  --text-muted: #888888;
+
+  --primary: #0070f3;
+  --primary-hover: #0051a8;
+  --primary-light: rgba(0, 112, 243, 0.1);
+  --primary-border: rgba(0, 112, 243, 0.2);
+
+  --danger: #ff4d4f;
+  --danger-hover: #d9363e;
+  --success: #10b981;
+  --success-hover: #059669;
+
+  --overlay: rgba(0, 0, 0, 0.8);
+  --shadow-modal: 0 24px 48px rgba(0, 0, 0, 0.8);
 }
 
 html,
@@ -41,4 +71,26 @@ input,
 textarea,
 button {
   font-family: inherit;
+}
+
+/* Form overrides */
+.input-no-icon::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* Animations */
+@keyframes subtleFlicker {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+  95% { opacity: 0.9; filter: brightness(0.9); }
+  98% { opacity: 0.8; filter: brightness(1.2); }
+  99% { opacity: 1; filter: brightness(0.8); }
+}
+
+.btn-flicker {
+  animation: subtleFlicker 4s infinite paused;
+}
+
+.btn-flicker:hover {
+  animation-play-state: running;
 }

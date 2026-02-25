@@ -61,39 +61,51 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({ selectedDate, on
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {/* Header controls */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', height: '32px' }}>
-                <button onClick={handlePrevWeek} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 8px' }}>
+            {/* Jump to Present Button (Centered Top) */}
+            <div style={{ display: 'flex', justifyContent: 'center', height: '24px' }}>
+                {!isCurrentWeek && (
+                    <button
+                        onClick={handleJumpToPresent}
+                        style={{
+                            background: 'var(--primary-light)',
+                            color: 'var(--primary)',
+                            border: '1px solid var(--primary-border)',
+                            padding: '4px 16px',
+                            borderRadius: '16px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        Back to Present
+                    </button>
+                )}
+            </div>
+
+            {/* Header controls (Chevrons + Month/Year) */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 8px' }}>
+                <button onClick={handlePrevWeek} style={{ background: 'none', border: 'none', color: 'var(--foreground-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px' }}>
                     <ChevronLeft size={24} />
                 </button>
 
-                <div style={{ fontSize: '1.2rem', color: '#fff', fontWeight: 700 }}>
+                <div style={{ fontSize: '1.5rem', color: 'var(--foreground)', fontWeight: 700, flex: 1, textAlign: 'center' }}>
                     {viewedWeekSunday.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {!isCurrentWeek && (
-                        <button
-                            onClick={handleJumpToPresent}
-                            style={{ background: 'rgba(0,112,243,0.1)', color: '#0070f3', border: '1px solid rgba(0,112,243,0.2)', padding: '4px 12px', borderRadius: '16px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
-                        >
-                            Present
-                        </button>
-                    )}
-                    <button onClick={handleNextWeek} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 8px' }}>
-                        <ChevronRight size={24} />
-                    </button>
-                </div>
+                <button onClick={handleNextWeek} style={{ background: 'none', border: 'none', color: 'var(--foreground-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px' }}>
+                    <ChevronRight size={24} />
+                </button>
             </div>
 
             {/* Scrollable Container Container */}
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                backgroundColor: '#1a1a1a',
+                backgroundColor: 'var(--surface)',
                 padding: '16px 10px',
                 borderRadius: '16px',
-                border: '1px solid #333',
+                border: '1px solid var(--border)',
                 width: '100%',
                 overflowX: 'auto',
                 scrollSnapType: 'x mandatory',
@@ -121,8 +133,8 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({ selectedDate, on
                             padding: '10px 6px',
                             minWidth: '13%', // Ensure they fit in the constrained box
                             borderRadius: '12px',
-                            backgroundColor: day.isSelected ? 'rgba(0, 112, 243, 0.15)' : 'transparent',
-                            border: day.isSelected ? '1px solid #0070f3' : (day.isToday ? '1px solid #333' : '1px solid transparent'),
+                            backgroundColor: day.isSelected ? 'var(--primary-light)' : 'transparent',
+                            border: day.isSelected ? '1px solid var(--primary)' : (day.isToday ? '1px solid var(--border-hover)' : '1px solid transparent'),
                             cursor: 'pointer',
                             transition: 'all 0.2s ease',
                             outline: 'none',
@@ -131,7 +143,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({ selectedDate, on
                     >
                         <span style={{
                             fontSize: '0.9rem',
-                            color: day.isSelected ? '#0070f3' : (day.isToday ? '#fff' : '#888'),
+                            color: day.isSelected ? 'var(--primary)' : (day.isToday ? 'var(--foreground)' : 'var(--foreground-muted)'),
                             textTransform: 'uppercase',
                             fontWeight: day.isSelected || day.isToday ? 700 : 500,
                             marginBottom: '2px'
@@ -141,7 +153,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({ selectedDate, on
                         <span style={{
                             fontSize: '1.4rem',
                             fontWeight: day.isSelected || day.isToday ? 800 : 600,
-                            color: day.isSelected || day.isToday ? '#fff' : '#ccc'
+                            color: day.isSelected || day.isToday ? 'var(--foreground)' : 'var(--foreground-muted)'
                         }}>
                             {day.dayNumber}
                         </span>
@@ -153,7 +165,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({ selectedDate, on
                                 width: '5px',
                                 height: '5px',
                                 borderRadius: '50%',
-                                backgroundColor: '#fff'
+                                backgroundColor: 'var(--foreground)'
                             }} />
                         )}
                     </button>

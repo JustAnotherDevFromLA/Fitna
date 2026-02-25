@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Button } from '../components/ui/Button';
 import { useSessionStore } from '../lib/store';
 import { WeeklyCalendar } from '../components/ui/WeeklyCalendar';
@@ -12,7 +13,7 @@ import { GoalEngine, SplitType, SessionPlan } from '../lib/GoalEngine';
 import { Session, WeightliftingActivity, CardioActivity, MobilityActivity } from '../models/Session';
 import { EditSessionModal } from '../components/session/EditSessionModal';
 import { ActiveSessionInline } from '../components/session/ActiveSessionInline';
-import { LogSessionModal } from '../components/session/LogSessionModal';
+import { SessionLogModal } from '../components/session/SessionLogModal';
 
 export default function Home() {
   const { activeSession, pauseSession, resumeSession, removeActivity, updateActivity, addActivityToSession, endSession, startNewSession, loadActiveSession } = useSessionStore();
@@ -32,6 +33,14 @@ export default function Home() {
   // Modal Control States
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+  const [sessionLogModal, setSessionLogModal] = useState<{
+    isOpen: boolean;
+    sessionId?: string | null;
+    dateParam?: string | null;
+    timeParam?: string | null;
+    exercisesParam?: string | null;
+    nameParam?: string | null;
+  }>({ isOpen: false });
 
   // Phase 29: Hydrate active workout from IndexedDB on initial mount
   useEffect(() => {
@@ -237,7 +246,7 @@ export default function Home() {
   const weekSundayStr = getWeekSundayString(selectedDate);
 
   return (
-    <main style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '32px', alignItems: 'center', maxWidth: '600px', margin: '0 auto' }}>
+    <main style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '32px', alignItems: 'center', maxWidth: '600px', margin: '0 auto', color: 'var(--foreground)' }}>
 
       {/* Dynamic Weekly Calendar */}
       <WeeklyCalendar
@@ -258,15 +267,15 @@ export default function Home() {
 
       {/* Main Call to Action */}
       <div style={{ width: '100%', marginTop: '8px' }}>
-        <h2 style={{ marginBottom: '16px', textAlign: 'center' }}>{isToday ? "Today's Plan" : selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</h2>
+        <h2 style={{ marginBottom: '16px', textAlign: 'center', fontSize: '1.5rem' }}>{isToday ? "Today's Plan" : selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</h2>
 
         {/* Weekly Split Focus Card */}
         {todaysPlan && (
           <div
             onClick={() => setIsEditModalOpen(true)}
             style={{
-              backgroundColor: isRestDay ? 'transparent' : 'rgba(0, 112, 243, 0.1)',
-              border: isRestDay ? '1px dashed #333' : '1px solid #0070f3',
+              backgroundColor: isRestDay ? 'transparent' : 'var(--primary-light)',
+              border: isRestDay ? '1px dashed var(--border)' : '1px solid var(--primary)',
               padding: '16px 24px',
               borderRadius: '16px',
               marginBottom: '16px',
@@ -280,30 +289,31 @@ export default function Home() {
             onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
             onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            <h3 style={{ margin: 0, color: isRestDay ? '#888' : '#0070f3', fontSize: '1.2rem', textTransform: 'uppercase' }}>
+            <h3 style={{ margin: 0, color: isRestDay ? 'var(--foreground-muted)' : 'var(--primary)', fontSize: '1.2rem', textTransform: 'uppercase' }}>
               {isRestDay ? 'Active Recovery' : todaysPlan.focus}
             </h3>
             {!isRestDay && todaysPlan.exercises.length > 0 && (
-              <p style={{ margin: '8px 0 0 0', color: '#ccc', fontSize: '0.9rem' }}>
+              <p style={{ margin: '8px 0 0 0', color: 'var(--foreground-muted)', fontSize: '0.9rem' }}>
                 {todaysPlan.exercises.join(' • ')}
               </p>
             )}
-            <span style={{ fontSize: '0.75rem', color: '#0070f3', marginTop: '12px', fontWeight: 700, opacity: 0.8 }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: '12px', fontWeight: 700, opacity: 0.8 }}>
               TAP TO CONFIGURE
             </span>
           </div>
         )}
 
         <div style={{
-          backgroundColor: activeSession && isToday ? 'transparent' : '#1a1a1a',
-          padding: activeSession && isToday ? '0' : '32px 24px',
+          backgroundColor: 'var(--surface-secondary)',
+          padding: '32px 24px',
           borderRadius: '24px',
-          border: activeSession && isToday ? 'none' : '1px solid #333',
+          border: '1px solid var(--border)',
           textAlign: 'center',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '16px'
+          gap: '16px',
+          width: '100%'
         }}>
           {activeSession && isToday ? (
             <ActiveSessionInline />
@@ -311,15 +321,16 @@ export default function Home() {
             <>
               <h3 style={{ margin: 0, fontSize: '1.5rem' }}>{isFuture ? "Future Workout" : (isToday ? "Ready to train today?" : "Record Past Workout")}</h3>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 24px', backgroundColor: '#222', borderRadius: '12px', alignSelf: 'center', marginTop: '16px', marginBottom: '8px', border: '1px solid #333' }}>
-                <span style={{ fontSize: '0.9rem', color: '#ccc', fontWeight: 600 }}>Start Time:</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 24px', backgroundColor: 'var(--surface)', borderRadius: '12px', alignSelf: 'center', marginTop: '16px', marginBottom: '8px', border: '1px solid var(--border)' }}>
+                <span style={{ fontSize: '0.9rem', color: 'var(--foreground-muted)', fontWeight: 600 }}>Start Time:</span>
                 <input
                   type="time"
+                  className="input-no-icon"
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}
                   style={{
                     backgroundColor: 'transparent',
-                    color: '#0070f3',
+                    color: 'var(--primary)',
                     fontWeight: 800,
                     border: 'none',
                     fontSize: '1.2rem',
@@ -331,41 +342,47 @@ export default function Home() {
                 />
               </div>
 
-              <Button
-                variant="primary"
-                size="massive"
-                fullWidth
-                onClick={() => {
-                  if (!isToday) {
-                    if (isFuture) {
-                      window.location.href = `/plan?week=${weekSundayStr}&editDay=${getGoalEngineDay(selectedDate)}`;
-                    } else {
-                      window.location.href = `/session/edit${dateQuery}`;
+              {isFuture ? null : (
+                <Button
+                  variant="primary"
+                  size="massive"
+                  className="btn-flicker"
+                  fullWidth
+                  onClick={async () => {
+                    if (!isToday) {
+                      setSessionLogModal({
+                        isOpen: true,
+                        dateParam: hardDateStr,
+                        timeParam: selectedTime,
+                        exercisesParam: todaysPlan && todaysPlan.exercises.length > 0 && !isRestDay ? encodeURIComponent(JSON.stringify(todaysPlan.exercises)) : undefined,
+                        nameParam: todaysPlan && !isRestDay ? encodeURIComponent(todaysPlan.focus) : (isRestDay ? 'Active Recovery' : 'Workout')
+                      });
+                      return;
                     }
-                    return;
-                  }
 
-                  // Initialize the session directly on the Home dashboard
-                  let initialActivities: WeightliftingActivity[] | undefined = undefined;
-                  if (todaysPlan && todaysPlan.exercises.length > 0 && !isRestDay) {
-                    initialActivities = todaysPlan.exercises.map((exerciseName, index) => {
-                      return {
-                        id: `act_${Date.now()}_${index}`,
-                        type: 'weightlifting',
-                        name: exerciseName,
-                        sets: [{ id: `set_${Date.now()}_${index}_0`, weight: 0, reps: 0 }]
-                      } as WeightliftingActivity;
-                    });
-                  }
-                  // Start the session entirely inline, mutating the store
-                  const sessionName = isRestDay ? 'Active Recovery' : (todaysPlan?.focus || 'Workout');
-                  startNewSession('user_123', 'Custom Workout', undefined, initialActivities, sessionName);
-                }}
-              >
-                <span style={{ fontWeight: 800 }}>
-                  {isFuture ? `Edit Upcoming ${selectedDate.toLocaleDateString('en-US', { weekday: 'long' })} Workout` : (isToday ? "Start Workout" : `Log ${selectedDate.toLocaleDateString('en-US', { weekday: 'long' })} Workout`)}
-                </span>
-              </Button>
+                    // Initialize the session directly on the Home dashboard
+                    let initialActivities: WeightliftingActivity[] | undefined = undefined;
+                    if (todaysPlan && todaysPlan.exercises.length > 0 && !isRestDay) {
+                      initialActivities = todaysPlan.exercises.map((exerciseName, index) => {
+                        const randomSuffix = Math.random().toString(36).substring(7);
+                        return {
+                          id: `act_${Date.now()}_${index}_${randomSuffix}`,
+                          type: 'weightlifting',
+                          name: exerciseName,
+                          sets: [{ id: `set_${Date.now()}_${index}_0_${randomSuffix}`, weight: 0, reps: 0 }]
+                        } as WeightliftingActivity;
+                      });
+                    }
+                    // Start the session entirely inline, mutating the store
+                    const sessionName = isRestDay ? 'Active Recovery' : (todaysPlan?.focus || 'Workout');
+                    await startNewSession('user_123', 'Custom Workout', undefined, initialActivities, sessionName);
+                  }}
+                >
+                  <span style={{ fontWeight: 800 }}>
+                    {isToday ? "Start Workout" : `Log ${selectedDate.toLocaleDateString('en-US', { weekday: 'long' })} Workout`}
+                  </span>
+                </Button>
+              )}
             </>
           )}
         </div>
@@ -376,88 +393,123 @@ export default function Home() {
           onClose={() => setIsEditModalOpen(false)}
           todaysPlan={todaysPlan}
           isRestDay={isRestDay || false}
-          onStartWorkout={(configuredActivities) => {
-            const sessionName = isRestDay ? 'Active Recovery' : (todaysPlan?.focus || 'Workout');
-            startNewSession('user_123', 'Custom Workout', undefined, configuredActivities, sessionName);
+          onSave={(configuredActivities) => {
+            // Persist changes to the split for this week
+            const exerciseNames = configuredActivities.map(a => a.name);
+            const weekKey = getWeekSundayString(selectedDate);
+            const targetDay = getGoalEngineDay(selectedDate);
+
+            // 1. Resolve what the current custom split looks like
+            const routines = customSplit || GoalEngine.generateSessionsForSplit(activeSplit || 'PPL');
+
+            // 2. Update the specific day
+            const updatedRoutines = routines.map(r =>
+              r.day === targetDay ? { ...r, exercises: exerciseNames } : r
+            );
+
+            // 3. Persist to LocalStorage
+            localStorage.setItem(`activeSplit_${weekKey}`, activeSplit || 'PPL');
+            localStorage.setItem(`customSplitItems_${weekKey}`, JSON.stringify(updatedRoutines));
+
+            // 4. Update local state to trigger re-renders
+            setCustomSplit(updatedRoutines);
           }}
         />
 
+        <SessionLogModal
+          isOpen={sessionLogModal.isOpen}
+          onClose={() => setSessionLogModal({ isOpen: false })}
+          sessionId={sessionLogModal.sessionId}
+          dateParam={sessionLogModal.dateParam}
+          timeParam={sessionLogModal.timeParam}
+          exercisesParam={sessionLogModal.exercisesParam}
+          nameParam={sessionLogModal.nameParam}
+        />
+
         {/* Completed Daily Sessions Log */}
-        {dailySessions.length > 0 && (
-          <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <h3 style={{ margin: '0 0 8px 0', fontSize: '1.2rem', color: '#fff' }}>
-              {isToday ? "Today's workouts" : `${selectedDate.toLocaleDateString('en-US', { weekday: 'long' })}'s workouts`}
-            </h3>
-            {dailySessions.map(session => {
-              let durationMins = 0;
-              if (session.endTime) {
-                durationMins = Math.round((session.endTime - session.startTime - (session.totalPausedMs || 0)) / 60000);
-              }
-
-              let totalVolume = 0;
-              session.activities.forEach(act => {
-                if (act.type === 'weightlifting') {
-                  (act as WeightliftingActivity).sets.forEach(set => {
-                    totalVolume += (set.weight * set.reps);
-                  });
+        {
+          dailySessions.length > 0 && (
+            <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.5rem', color: 'var(--foreground)' }}>
+                {isToday ? "Today's Workouts" : `${selectedDate.toLocaleDateString('en-US', { weekday: 'long' })}'s Workouts`}
+              </h3>
+              {dailySessions.map(session => {
+                let durationMins = 0;
+                if (session.endTime) {
+                  durationMins = Math.round((session.endTime - session.startTime - (session.totalPausedMs || 0)) / 60000);
                 }
-              });
 
-              const startTimeStr = new Date(session.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-              const endTimeStr = session.endTime ? new Date(session.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-              const sessionTitle = getDynamicSessionTitle(session);
+                let totalVolume = 0;
+                session.activities.forEach(act => {
+                  if (act.type === 'weightlifting') {
+                    (act as WeightliftingActivity).sets.forEach(set => {
+                      totalVolume += (set.weight * set.reps);
+                    });
+                  }
+                });
 
-              return (
-                <div key={session.id} style={{
-                  backgroundColor: '#1a1a1a',
-                  border: '1px solid #333',
-                  borderRadius: '16px',
-                  padding: '16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                      <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#fff', letterSpacing: '-0.3px' }}>
-                        {sessionTitle}
-                      </span>
-                      <span style={{ fontSize: '0.85rem', color: '#888' }}>
-                        Duration: {durationMins > 0 ? `${durationMins} min` : '0 min'}
-                      </span>
-                    </div>
-                    <span style={{ fontSize: '0.85rem', color: '#0070f3', fontWeight: 600 }}>
-                      {startTimeStr} - {endTimeStr}
-                    </span>
-                  </div>
+                const startTimeStr = new Date(session.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const endTimeStr = session.endTime ? new Date(session.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                const sessionTitle = getDynamicSessionTitle(session);
 
-                  {totalVolume > 0 && (
-                    <div style={{ fontSize: '0.85rem', color: '#0070f3', fontWeight: 600 }}>
-                      Volume: {totalVolume.toLocaleString()} lbs
-                    </div>
-                  )}
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '8px' }}>
-                    {session.activities.map(act => (
-                      <div key={act.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
-                        <span style={{ color: '#ccc' }}>{act.name}</span>
-                        {act.type === 'weightlifting' && (
-                          <span style={{ color: '#666' }}>{(act as WeightliftingActivity).sets.length} sets</span>
-                        )}
+                return (
+                  <div
+                    key={session.id}
+                    onClick={() => setSessionLogModal({ isOpen: true, sessionId: session.id })}
+                    style={{
+                      backgroundColor: 'var(--surface-secondary)',
+                      border: '1px solid var(--border)',
+                      borderRadius: '16px',
+                      padding: '16px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '8px',
+                      cursor: 'pointer',
+                      transition: 'transform 0.1s ease'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+                    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--foreground)', letterSpacing: '-0.3px' }}>
+                          {sessionTitle}
+                        </span>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--foreground-muted)' }}>
+                          Duration: {durationMins > 0 ? `${durationMins} min` : '0 min'}
+                        </span>
                       </div>
-                    ))}
-                    {session.activities.length === 0 && (
-                      <span style={{ color: '#666', fontSize: '0.9rem' }}>Empty Session</span>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600 }}>
+                        {startTimeStr} - {endTimeStr}
+                      </span>
+                    </div>
+
+                    {totalVolume > 0 && (
+                      <div style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600 }}>
+                        Volume: {totalVolume.toLocaleString()} lbs
+                      </div>
                     )}
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '8px' }}>
+                      {session.activities.map(act => (
+                        <div key={act.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                          <span style={{ color: 'var(--foreground)' }}>{act.name}</span>
+                          {act.type === 'weightlifting' && (
+                            <span style={{ color: 'var(--foreground-muted)' }}>{(act as WeightliftingActivity).sets.length} sets</span>
+                          )}
+                        </div>
+                      ))}
+                      {session.activities.length === 0 && (
+                        <span style={{ color: 'var(--foreground-muted)', fontSize: '0.9rem' }}>Empty Session</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
+                );
+              })}
+            </div>
+          )
+        }
       </div>
-
     </main>
   );
 }

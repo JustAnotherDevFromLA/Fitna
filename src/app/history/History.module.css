@@ -5,8 +5,8 @@
     max-width: 600px;
     margin: 0 auto;
     padding: 16px;
-    background-color: #121212;
-    color: white;
+    background-color: var(--background);
+    color: var(--foreground);
 }
 
 .header {
@@ -21,7 +21,7 @@
 }
 
 .emptyState {
-    color: #888;
+    color: var(--foreground-muted);
     text-align: center;
     margin-top: 64px;
     font-size: 1.1rem;
@@ -34,8 +34,8 @@
 }
 
 .card {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -46,18 +46,18 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--border);
     padding-bottom: 12px;
 }
 
 .date {
     font-weight: 700;
     font-size: 1.1rem;
-    color: #0070f3;
+    color: var(--primary);
 }
 
 .duration {
-    color: #888;
+    color: var(--foreground-muted);
     font-size: 0.9rem;
     font-weight: 600;
 }
@@ -76,18 +76,18 @@
 
 .activityName {
     font-weight: 600;
-    color: #e0e0e0;
+    color: var(--foreground);
 }
 
 .activityDetail {
-    color: #aaa;
+    color: var(--foreground-muted);
     font-size: 0.85rem;
 }
 
 .deleteButton {
     background: none;
     border: none;
-    color: #ff4d4f;
+    color: var(--danger);
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
@@ -98,5 +98,24 @@
 }
 
 .deleteButton:hover {
-    background-color: rgba(255, 77, 79, 0.1);
+    background-color: var(--primary-light);
+}
+
+.calendarDay {
+    min-height: 60px;
+    border-radius: 8px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.calendarDay:hover {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: var(--surface-hover) !important;
 }

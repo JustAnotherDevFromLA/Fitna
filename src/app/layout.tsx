@@ -4,6 +4,8 @@ import { NavBar } from "@/components/ui/NavBar";
 import { ToastProvider } from "@/lib/ToastContext";
 import { AuthWrapper } from "@/components/ui/AuthWrapper";
 
+import { ThemeProvider } from "@/lib/ThemeContext";
+
 export const viewport: Viewport = {
   themeColor: "#000000",
   width: "device-width",
@@ -34,14 +36,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthWrapper>
-          <ToastProvider>
-            <div style={{ paddingBottom: '80px' }}>
-              {children}
-            </div>
-            <NavBar />
-          </ToastProvider>
-        </AuthWrapper>
+        <ThemeProvider>
+          <AuthWrapper>
+            <ToastProvider>
+              <div style={{ paddingBottom: '80px' }}>
+                {children}
+              </div>
+              <NavBar />
+            </ToastProvider>
+          </AuthWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );

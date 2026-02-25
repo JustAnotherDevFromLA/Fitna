@@ -97,39 +97,65 @@ export function ActiveSessionInline() {
     if (!activeSession) return null;
 
     return (
-        <div style={{ width: '100%', paddingBottom: '100px', animation: 'fadeIn 0.3s ease-in' }}>
+        <div style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            animation: 'fadeIn 0.3s ease-in'
+        }}>
             <style dangerouslySetInnerHTML={{
                 __html: `
                 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
             `}} />
 
-            {/* Header Navbar */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                <div>
-                    <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: '#fff' }}>{activeSession.name}</h2>
-                    <span style={{ fontSize: '0.9rem', color: '#0070f3', fontWeight: 600 }}>Active Session</span>
-                </div>
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+            `}} />
+
+            {/* Header Navbar - Styled like the 'Todays Plan' Card */}
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                marginBottom: '24px',
+                gap: '8px'
+            }}>
+                <h3 style={{ margin: 0, color: 'var(--foreground)', fontSize: '1.5rem', fontWeight: 800 }}>
+                    {activeSession.name}
+                </h3>
+                {activeSession.status === 'paused' ? (
+                    <span style={{ fontSize: '0.85rem', color: '#f5a623', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', padding: '4px 8px', backgroundColor: 'rgba(245, 166, 35, 0.1)', borderRadius: '4px' }}>
+                        SESSION PAUSED
+                    </span>
+                ) : (
+                    <span style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 600 }}>
+                        Active Session
+                    </span>
+                )}
             </div>
 
             {/* Status Widgets */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#161616', padding: '16px 24px', borderRadius: '16px', border: '1px solid #333', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--surface)', padding: '16px 24px', borderRadius: '16px', border: '1px solid var(--border)', marginBottom: '24px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.8rem', color: '#888', textTransform: 'uppercase', letterSpacing: '1px' }}>Active Time</span>
-                    <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0070f3', fontVariantNumeric: 'tabular-nums' }}>{formatElapsed(activeElapsed)}</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--foreground-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Active Time</span>
+                    <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary)', fontVariantNumeric: 'tabular-nums' }}>{formatElapsed(activeElapsed)}</span>
                 </div>
 
-                <div style={{ width: '1px', height: '40px', backgroundColor: '#333' }} />
+                <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border)' }} />
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.8rem', color: '#888', textTransform: 'uppercase', letterSpacing: '1px' }}>Total Time</span>
-                    <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#888', fontVariantNumeric: 'tabular-nums' }}>{formatElapsed(totalElapsed)}</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--foreground-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Total Time</span>
+                    <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--foreground-muted)', fontVariantNumeric: 'tabular-nums' }}>{formatElapsed(totalElapsed)}</span>
                 </div>
             </div>
 
             {/* Floating Rest Timer Widget */}
             <div style={{
-                backgroundColor: isTimerActive ? 'rgba(0, 112, 243, 0.1)' : '#161616',
-                border: isTimerActive ? '1px solid #0070f3' : '1px solid #333',
+                backgroundColor: isTimerActive ? 'var(--primary-light)' : 'var(--surface)',
+                border: isTimerActive ? '1px solid var(--primary)' : '1px solid var(--border)',
                 padding: '16px 20px',
                 borderRadius: '16px',
                 marginBottom: '32px',
@@ -139,9 +165,9 @@ export function ActiveSessionInline() {
                 transition: 'all 0.3s'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Clock size={24} color={isTimerActive ? '#0070f3' : '#888'} />
+                    <Clock size={24} color={isTimerActive ? 'var(--primary)' : 'var(--foreground-muted)'} />
                     <div style={{ textAlign: 'left' }}>
-                        <span style={{ display: 'block', fontSize: '1.2rem', fontWeight: 700, color: isTimerActive ? '#fff' : '#ccc' }}>
+                        <span style={{ display: 'block', fontSize: '1.2rem', fontWeight: 700, color: isTimerActive ? 'var(--foreground)' : 'var(--foreground-muted)' }}>
                             {isTimerActive ? formatTime(restSeconds) : 'Rest Timer'}
                         </span>
                     </div>
@@ -149,7 +175,7 @@ export function ActiveSessionInline() {
 
                 <div style={{ display: 'flex', gap: '8px' }}>
                     {isTimerActive ? (
-                        <Button variant="secondary" size="small" onClick={skipRest} style={{ color: '#ff4d4f', padding: '8px 16px' }}>Skip</Button>
+                        <Button variant="secondary" size="small" onClick={skipRest} style={{ color: 'var(--danger)', padding: '8px 16px' }}>Skip</Button>
                     ) : (
                         <>
                             <Button variant="secondary" size="small" onClick={() => startRest(60)}>1:00</Button>
@@ -161,9 +187,9 @@ export function ActiveSessionInline() {
             </div>
 
             {/* Programmed Blocks */}
-            <div style={{ textAlign: 'left', marginBottom: '40px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div style={{ textAlign: 'left', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '24px', flexGrow: 1 }}>
                 {activeSession.activities.length === 0 ? (
-                    <p style={{ color: '#888', textAlign: 'center', marginTop: '40px' }}>No activities in this session yet. Add one to begin.</p>
+                    <p style={{ color: 'var(--foreground-muted)', textAlign: 'center', marginTop: '40px' }}>No activities in this session yet. Add one to begin.</p>
                 ) : (
                     activeSession.activities.map(act => (
                         <ActivityBlock
@@ -176,31 +202,24 @@ export function ActiveSessionInline() {
                 )}
             </div>
 
-            {/* Fixed Bottom Action Bar */}
-            <div style={{
-                position: 'fixed', bottom: 0, left: 0, width: '100vw',
-                backgroundColor: 'rgba(10,10,10,0.9)', backdropFilter: 'blur(10px)',
-                borderTop: '1px solid #222', padding: '20px 24px',
-                display: 'flex', justifyContent: 'center', zIndex: 10000
-            }}>
-                <div style={{ width: '100%', maxWidth: '600px', display: 'flex', gap: '16px' }}>
-                    <Button
-                        variant="secondary"
-                        style={{ flex: 1 }}
-                        onClick={activeSession.status === 'paused' ? resumeSession : pauseSession}
-                    >
-                        {activeSession.status === 'paused' ? 'Resume Workout' : 'Pause Workout'}
-                    </Button>
-                    <Button
-                        variant="primary"
-                        style={{ flex: 1, backgroundColor: '#00c853', color: '#000' }}
-                        onClick={async () => {
-                            await endSession();
-                        }}
-                    >
-                        Complete Workout
-                    </Button>
-                </div>
+            {/* Inline Action Bar */}
+            <div style={{ width: '100%', display: 'flex', gap: '16px', marginTop: 'auto', paddingTop: '16px' }}>
+                <Button
+                    variant="secondary"
+                    style={{ flex: 1 }}
+                    onClick={activeSession.status === 'paused' ? resumeSession : pauseSession}
+                >
+                    {activeSession.status === 'paused' ? 'Resume Workout' : 'Pause Workout'}
+                </Button>
+                <Button
+                    variant="primary"
+                    style={{ flex: 1 }}
+                    onClick={async () => {
+                        await endSession();
+                    }}
+                >
+                    Complete Workout
+                </Button>
             </div>
         </div>
     );

@@ -30,29 +30,29 @@ export const OnboardingModal: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            backgroundColor: 'var(--overlay)',
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',
             zIndex: 9999,
             padding: '24px'
         }}>
             <div style={{
-                backgroundColor: '#121212',
+                backgroundColor: 'var(--background)',
                 borderRadius: '24px',
-                border: '1px solid #333',
+                border: '1px solid var(--border)',
                 padding: '32px 24px',
                 width: '100%',
                 maxWidth: '400px',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '24px',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+                boxShadow: 'var(--shadow-modal)'
             }}>
                 <div style={{ textAlign: 'center' }}>
-                    <h2 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 8px 0', color: '#fff' }}>
+                    <h2 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 8px 0', color: 'var(--foreground)' }}>
                         Welcome to Fitna
                     </h2>
-                    <p style={{ fontSize: '0.95rem', color: '#888', margin: 0, lineHeight: 1.5 }}>
+                    <p style={{ fontSize: '0.95rem', color: 'var(--foreground-muted)', margin: 0, lineHeight: 1.5 }}>
                         Let&apos;s establish your baseline metrics so the Goal Engine can build your perfect progression.
                     </p>
                 </div>
@@ -60,7 +60,7 @@ export const OnboardingModal: React.FC = () => {
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#ccc', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--foreground-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                             Bodyweight (lbs)
                         </label>
                         <input
@@ -70,23 +70,23 @@ export const OnboardingModal: React.FC = () => {
                             onChange={(e) => setBodyweight(e.target.value)}
                             placeholder="e.g. 185"
                             style={{
-                                backgroundColor: '#1a1a1a',
-                                border: '1px solid #333',
+                                backgroundColor: 'var(--surface)',
+                                border: '1px solid var(--border)',
                                 borderRadius: '12px',
                                 padding: '12px 16px',
-                                color: '#fff',
+                                color: 'var(--foreground)',
                                 fontSize: '1rem',
                                 outline: 'none',
                                 transition: 'border-color 0.2s'
                             }}
-                            onFocus={(e) => e.target.style.borderColor = '#0070f3'}
-                            onBlur={(e) => e.target.style.borderColor = '#333'}
+                            onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+                            onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                         />
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#ccc', textTransform: 'uppercase' }}>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--foreground-muted)', textTransform: 'uppercase' }}>
                                 Squat
                             </label>
                             <input
@@ -95,22 +95,22 @@ export const OnboardingModal: React.FC = () => {
                                 onChange={(e) => setSquat(e.target.value)}
                                 placeholder="1RM"
                                 style={{
-                                    backgroundColor: '#1a1a1a',
-                                    border: '1px solid #333',
+                                    backgroundColor: 'var(--surface)',
+                                    border: '1px solid var(--border)',
                                     borderRadius: '12px',
                                     padding: '12px 8px',
-                                    color: '#fff',
+                                    color: 'var(--foreground)',
                                     fontSize: '1rem',
                                     textAlign: 'center',
                                     outline: 'none',
                                     transition: 'border-color 0.2s'
                                 }}
-                                onFocus={(e) => e.target.style.borderColor = '#0070f3'}
-                                onBlur={(e) => e.target.style.borderColor = '#333'}
+                                onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+                                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                             />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#ccc', textTransform: 'uppercase' }}>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--foreground-muted)', textTransform: 'uppercase' }}>
                                 Bench
                             </label>
                             <input
@@ -119,22 +119,22 @@ export const OnboardingModal: React.FC = () => {
                                 onChange={(e) => setBench(e.target.value)}
                                 placeholder="1RM"
                                 style={{
-                                    backgroundColor: '#1a1a1a',
-                                    border: '1px solid #333',
+                                    backgroundColor: 'var(--surface)',
+                                    border: '1px solid var(--border)',
                                     borderRadius: '12px',
                                     padding: '12px 8px',
-                                    color: '#fff',
+                                    color: 'var(--foreground)',
                                     fontSize: '1rem',
                                     textAlign: 'center',
                                     outline: 'none',
                                     transition: 'border-color 0.2s'
                                 }}
-                                onFocus={(e) => e.target.style.borderColor = '#0070f3'}
-                                onBlur={(e) => e.target.style.borderColor = '#333'}
+                                onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+                                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                             />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#ccc', textTransform: 'uppercase' }}>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--foreground-muted)', textTransform: 'uppercase' }}>
                                 Deadlift
                             </label>
                             <input
@@ -143,18 +143,18 @@ export const OnboardingModal: React.FC = () => {
                                 onChange={(e) => setDeadlift(e.target.value)}
                                 placeholder="1RM"
                                 style={{
-                                    backgroundColor: '#1a1a1a',
-                                    border: '1px solid #333',
+                                    backgroundColor: 'var(--surface)',
+                                    border: '1px solid var(--border)',
                                     borderRadius: '12px',
                                     padding: '12px 8px',
-                                    color: '#fff',
+                                    color: 'var(--foreground)',
                                     fontSize: '1rem',
                                     textAlign: 'center',
                                     outline: 'none',
                                     transition: 'border-color 0.2s'
                                 }}
-                                onFocus={(e) => e.target.style.borderColor = '#0070f3'}
-                                onBlur={(e) => e.target.style.borderColor = '#333'}
+                                onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+                                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                             />
                         </div>
                     </div>
@@ -164,7 +164,7 @@ export const OnboardingModal: React.FC = () => {
                         disabled={isSubmitting}
                         style={{
                             marginTop: '16px',
-                            backgroundColor: '#0070f3',
+                            backgroundColor: 'var(--primary)',
                             color: '#fff',
                             border: 'none',
                             borderRadius: '12px',

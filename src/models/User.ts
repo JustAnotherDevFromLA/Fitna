@@ -9,6 +9,8 @@ export interface UserProfile {
     bench_1rm?: number;
     deadlift_1rm?: number;
     bodyweight?: number;
+    gender?: string;
+    height?: number;
 
     is_onboarded: boolean;
     created_at: string;

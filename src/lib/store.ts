@@ -19,7 +19,7 @@ interface SessionState {
 
     // High-level Actions
     loadActiveSession: () => Promise<void>;
-    startNewSession: (userId: string, targetRoutine: string, startTimeOverride?: number, initialActivities?: Activity[], sessionName?: string) => void;
+    startNewSession: (userId: string, targetRoutine: string, startTimeOverride?: number, initialActivities?: Activity[], sessionName?: string) => Promise<void>;
     endSession: () => Promise<void>;
     deleteSession: (sessionId: string) => Promise<void>;
 
@@ -126,10 +126,13 @@ export const useSessionStore = create<SessionState>((set, get) => ({
             .select()
             .single();
 
+        if (error) {
+            console.error("Failed to onboard - Full Error:", JSON.stringify(error, null, 2));
+            throw error;
+        }
+
         if (data) {
             set({ userProfile: data });
-        } else {
-            console.error("Failed to onboard:", error);
         }
     },
 
@@ -140,16 +143,37 @@ export const useSessionStore = create<SessionState>((set, get) => ({
             // Find any session that has not been ended
             const activeOrPausedSessions = allSessions.filter(s => !s.endTime);
             if (activeOrPausedSessions.length > 0) {
-                // If somehow multiple exist, grab the most recent one
+                // Phase 29: If somehow multiple exist, grab the most recent one
                 const mostRecent = activeOrPausedSessions.sort((a, b) => b.startTime - a.startTime)[0];
                 set({ activeSession: mostRecent });
+
+                // Cleanup: If there were multiple, mark others as completed
+                if (activeOrPausedSessions.length > 1) {
+                    const now = Date.now();
+                    const others = activeOrPausedSessions.filter(s => s.id !== mostRecent.id);
+                    for (const s of others) {
+                        await dbStore.saveSession({ ...s, endTime: now });
+                    }
+                }
             }
         } catch (err) {
             console.error("Failed to load active session on startup", err);
         }
     },
 
-    startNewSession: (userId: string, _targetRoutine: string, startTimeOverride?: number, initialActivities?: Activity[], sessionName?: string) => {
+    startNewSession: async (userId: string, _targetRoutine: string, startTimeOverride?: number, initialActivities?: Activity[], sessionName?: string) => {
+        // --- Single Session Enforcement ---
+        // Before starting new, close any existing active sessions
+        const allSessions = await dbStore.getAllSessions();
+        const activeSessions = allSessions.filter(s => !s.endTime);
+        const now = Date.now();
+
+        if (activeSessions.length > 0) {
+            for (const s of activeSessions) {
+                await dbStore.saveSession({ ...s, endTime: now });
+            }
+        }
+
         let initialEndTime: number | undefined = undefined;
 
         if (startTimeOverride) {
@@ -175,14 +199,32 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         };
 
         set({ activeSession: newSession });
-        dbStore.saveSession(newSession).catch(console.error);
+        await dbStore.saveSession(newSession);
     },
 
     endSession: async () => {
         const { activeSession } = get();
         if (!activeSession) return;
 
-        const completedSession = { ...activeSession, endTime: Date.now() };
+        let updatedTotalPausedMs = activeSession.totalPausedMs || 0;
+        // Fix 1: If ending a paused session, add the final pause interval
+        if (activeSession.status === 'paused' && activeSession.pausedAt) {
+            const pauseDuration = Date.now() - activeSession.pausedAt;
+            updatedTotalPausedMs += pauseDuration;
+        }
+
+        // Fix 2: Don't overwrite historical end times with today's date
+        // Only set endTime to now if it's currently undefined (active session)
+        const finalEndTime = activeSession.endTime || Date.now();
+
+        const completedSession: Session = {
+            ...activeSession,
+            endTime: finalEndTime,
+            totalPausedMs: updatedTotalPausedMs,
+            status: 'active', // Reset status for the finished record
+            pausedAt: undefined
+        };
+
         await dbStore.saveSession(completedSession);
         set({ activeSession: null });
     },

@@ -16,24 +16,24 @@ interface ToastProps {
 export const Toast: React.FC<ToastProps> = ({ toast, onClose }) => {
     const getIcon = () => {
         switch (toast.type) {
-            case 'success': return <CheckCircle color="#10b981" size={20} />;
-            case 'error': return <AlertCircle color="#ff4d4f" size={20} />;
-            case 'confirm': return <HelpCircle color="#0070f3" size={20} />;
+            case 'success': return <CheckCircle color="var(--success)" size={20} />;
+            case 'error': return <AlertCircle color="var(--danger)" size={20} />;
+            case 'confirm': return <HelpCircle color="var(--primary)" size={20} />;
         }
     };
 
     const getBorder = () => {
         switch (toast.type) {
-            case 'success': return '1px solid #10b981';
-            case 'error': return '1px solid #ff4d4f';
-            case 'confirm': return '1px solid #0070f3';
+            case 'success': return '1px solid var(--success)';
+            case 'error': return '1px solid var(--danger)';
+            case 'confirm': return '1px solid var(--primary)';
         }
     };
 
     return (
         <div style={{
-            backgroundColor: '#1a1a1a',
-            color: 'white',
+            backgroundColor: 'var(--surface)',
+            color: 'var(--foreground)',
             padding: '16px',
             borderRadius: '12px',
             borderLeft: getBorder(),
@@ -58,7 +58,7 @@ export const Toast: React.FC<ToastProps> = ({ toast, onClose }) => {
                 </div>
 
                 {toast.type !== 'confirm' && (
-                    <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', padding: 0 }}>
+                    <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--foreground-muted)', cursor: 'pointer', padding: 0 }}>
                         <X size={16} />
                     </button>
                 )}

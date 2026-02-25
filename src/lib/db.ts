@@ -68,11 +68,26 @@ export const dbStore = {
         return await db.get(STORE_SESSIONS, id);
     },
 
-    /**
-     * Delete a session by ID
-     */
     async deleteSession(id: string): Promise<void> {
         if (!dbPromise) return;
+
+        // Try to delete from cloud if authenticated and online
+        if (typeof window !== 'undefined' && navigator.onLine) {
+            try {
+                const { data: { session: authSession } } = await supabase.auth.getSession();
+                if (authSession?.user) {
+                    const { error } = await supabase.from('sessions').delete().eq('id', id).eq('user_id', authSession.user.id);
+                    if (error) {
+                        console.error("[Sync Engine] Failed to delete session from cloud:", error.message);
+                    } else {
+                        console.log(`[Sync Engine] Successfully deleted session ${id} from cloud.`);
+                    }
+                }
+            } catch (e) {
+                console.error("[Sync Engine] Cloud deletion error:", e);
+            }
+        }
+
         const db = await dbPromise;
         await db.delete(STORE_SESSIONS, id);
     },
@@ -309,6 +324,8 @@ export const dbStore = {
                     key.startsWith('customSplitItems_') ||
                     key.startsWith('1RM_') ||
                     key === 'Bodyweight' ||
+                    key === 'Gender' ||
+                    key === 'Height' ||
                     key === 'fitna-storage' // Zustand persist key
                 )) {
                     keysToRemove.push(key);

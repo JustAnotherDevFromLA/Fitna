@@ -10,6 +10,7 @@ import { Trash, Copy, ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './History.module.css';
 import { useRouter } from 'next/navigation';
 import { getDynamicSessionTitle } from '../../lib/utils';
+import { SessionLogModal } from '../../components/session/SessionLogModal';
 
 export default function HistoryPage() {
     const [sessions, setSessions] = useState<Session[]>([]);
@@ -18,6 +19,11 @@ export default function HistoryPage() {
     const { deleteSession, startNewSession } = useSessionStore();
     const router = useRouter();
     const toast = useToast();
+    const [sessionLogModal, setSessionLogModal] = useState<{
+        isOpen: boolean;
+        sessionId?: string | null;
+        dateParam?: string | null;
+    }>({ isOpen: false });
 
     useEffect(() => {
         async function loadHistory() {
@@ -72,11 +78,11 @@ export default function HistoryPage() {
             });
 
             toast.success("Workout Copied!");
-            router.push('/session/edit'); // Uses active Zustand state, no ?sessionId= required
+            setSessionLogModal({ isOpen: true, sessionId: state.activeSession?.id });
         }, 50);
     };
 
-    if (loading) return <div style={{ padding: '24px', color: 'white' }}>Loading history...</div>;
+    if (loading) return <div style={{ padding: '24px', color: 'var(--foreground)' }}>Loading history...</div>;
 
     const prevMonth = () => {
         setCurrentMonth(prev => {
@@ -126,28 +132,28 @@ export default function HistoryPage() {
             </header>
 
             {/* Integrated Calendar Grid */}
-            <section style={{ backgroundColor: '#1a1a1a', borderRadius: '16px', border: '1px solid #333', padding: '20px', marginBottom: '32px' }}>
+            <section style={{ backgroundColor: 'var(--surface)', borderRadius: '16px', border: '1px solid var(--border)', padding: '20px', marginBottom: '32px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                     <button
                         onClick={prevMonth}
-                        style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', backgroundColor: '#333' }}
+                        style={{ background: 'none', border: 'none', color: 'var(--foreground-muted)', cursor: 'pointer', padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     >
-                        <ChevronLeft size={16} />
+                        <ChevronLeft size={24} />
                     </button>
-                    <h2 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700 }}>
+                    <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 700, flex: 1, textAlign: 'center' }}>
                         {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                     </h2>
                     <button
                         onClick={nextMonth}
-                        style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', backgroundColor: '#333' }}
+                        style={{ background: 'none', border: 'none', color: 'var(--foreground-muted)', cursor: 'pointer', padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     >
-                        <ChevronRight size={16} />
+                        <ChevronRight size={24} />
                     </button>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '6px', marginBottom: '8px' }}>
                     {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(dayName => (
-                        <div key={dayName} style={{ textAlign: 'center', color: '#888', fontSize: '0.75rem', fontWeight: 600 }}>
+                        <div key={dayName} style={{ textAlign: 'center', color: 'var(--foreground-muted)', fontSize: '0.75rem', fontWeight: 600 }}>
                             {dayName}
                         </div>
                     ))}
@@ -168,24 +174,22 @@ export default function HistoryPage() {
 
                         const hasWorkout = daySessions.length > 0;
 
+                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
                         return (
                             <div
                                 key={`day-${day}`}
+                                onClick={() => setSessionLogModal({ isOpen: true, dateParam: dateStr })}
+                                className={styles.calendarDay}
                                 style={{
-                                    minHeight: '60px',
-                                    backgroundColor: isToday ? 'rgba(0, 112, 243, 0.1)' : (hasWorkout ? '#222' : '#111'),
-                                    border: isToday ? '1px solid #0070f3' : (hasWorkout ? '1px solid #444' : '1px solid #222'),
-                                    borderRadius: '8px',
-                                    padding: '6px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    transition: 'all 0.2s',
+                                    backgroundColor: isToday ? 'var(--primary-light)' : (hasWorkout ? 'var(--surface-secondary)' : 'var(--background)'),
+                                    border: isToday ? '1px solid var(--primary)' : (hasWorkout ? '1px solid var(--border-hover)' : '1px solid var(--border)'),
                                 }}
                             >
                                 <span style={{
                                     fontSize: '0.8rem',
                                     fontWeight: isToday ? 800 : (hasWorkout ? 700 : 500),
-                                    color: isToday ? '#0070f3' : (hasWorkout ? '#fff' : '#666'),
+                                    color: isToday ? 'var(--primary)' : (hasWorkout ? 'var(--foreground)' : 'var(--foreground-muted)'),
                                     marginBottom: '4px'
                                 }}>
                                     {day}
@@ -243,16 +247,20 @@ export default function HistoryPage() {
                             const sessionTitle = getDynamicSessionTitle(session);
 
                             return (
-                                <Link href={`/session/edit?sessionId=${session.id}`} key={session.id} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <div className={styles.card} style={{ borderColor: isActive ? '#0070f3' : '#333', backgroundColor: isActive ? 'rgba(0,112,243,0.05)' : '#1a1a1a' }}>
+                                <div
+                                    key={session.id}
+                                    onClick={() => setSessionLogModal({ isOpen: true, sessionId: session.id })}
+                                    style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}
+                                >
+                                    <div className={styles.card} style={{ borderColor: isActive ? 'var(--primary)' : 'var(--border)', backgroundColor: isActive ? 'var(--primary-light)' : 'var(--surface)' }}>
                                         <div className={styles.cardHeader}>
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                                <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#fff', letterSpacing: '-0.3px' }}>
+                                                <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--foreground)', letterSpacing: '-0.3px' }}>
                                                     {sessionTitle}
                                                 </span>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                                                     <span className={styles.date}>{date}</span>
-                                                    <span className={styles.duration} style={{ color: '#0070f3', fontWeight: 600 }}>
+                                                    <span className={styles.duration} style={{ color: 'var(--primary)', fontWeight: 600 }}>
                                                         {startTimeStr} {endTimeStr ? `- ${endTimeStr}` : ''}
                                                     </span>
                                                     <span className={styles.duration}>
@@ -264,7 +272,7 @@ export default function HistoryPage() {
                                             <div style={{ display: 'flex', gap: '8px' }}>
                                                 <button
                                                     className={styles.deleteButton}
-                                                    style={{ color: '#0070f3' }}
+                                                    style={{ color: 'var(--primary)' }}
                                                     onClick={(e) => handleCopy(e, session)}
                                                     aria-label="Copy Session"
                                                 >
@@ -292,15 +300,26 @@ export default function HistoryPage() {
                                                 </div>
                                             ))}
                                             {session.activities.length === 0 && (
-                                                <span style={{ color: '#666', fontSize: '0.9rem' }}>Empty Session</span>
+                                                <span style={{ color: 'var(--foreground-muted)', fontSize: '0.9rem' }}>Empty Session</span>
                                             )}
                                         </div>
                                     </div>
-                                </Link>
+                                </div>
                             );
                         })}
                 </div>
             )}
+
+            <SessionLogModal
+                isOpen={sessionLogModal.isOpen}
+                onClose={() => {
+                    setSessionLogModal({ isOpen: false });
+                    // Refresh history after modal closes (in case of edits/deletes)
+                    dbStore.getAllSessions().then(setSessions);
+                }}
+                sessionId={sessionLogModal.sessionId}
+                dateParam={sessionLogModal.dateParam}
+            />
         </main>
     );
 }
